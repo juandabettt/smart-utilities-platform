@@ -1,0 +1,34 @@
+# --- Artefactos de Compilación (CRUCIAL) ---
+target/
+build/
+out/
+
+# --- Archivos de Sistema ---
+.DS_Store
+Thumbs.db
+
+# --- Configuración de VS Code ---
+.vscode/
+*.code-workspace
+
+# --- Configuración de IntelliJ IDEA ---
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# --- Configuración de Eclipse / STS ---
+.classpath
+.project
+.settings/
+.factorypath
+.springBeans
+.sts4-cache/
+
+# --- Maven Wrapper ---
+.mvn/wrapper/
+mvnw
+mvnw.cmd
+
+# --- Archivos temporales de logs ---
+*.log
