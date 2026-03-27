@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
+import AiAnalysisPage from './AiAnalysisPage';
+import TestimonialsPage from './TestimonialsPage';
 
 export interface Bill {
   id: number | string;
@@ -11,7 +14,10 @@ export interface Bill {
   registeredConsumption: number;
 }
 
-const App: React.FC = () => {
+// ─── Landing Page ─────────────────────────────────────────────────────────────
+
+const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
   const [bills, setBills] = useState<Bill[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -54,15 +60,13 @@ const App: React.FC = () => {
         body: formData,
       });
 
-      // MODIFICACIÓN CLAVE: Leer el mensaje del backend y mostrarlo
       const resultMessage = await response.text();
 
       if (response.ok) {
-        alert(`Respuesta del Sistema:\n${resultMessage}`); // Mostrar feedback al usuario
-        await fetchBills(); // Refrescar la tabla
-        setSelectedFile(null); // Limpiar el estado
+        alert(`Respuesta del Sistema:\n${resultMessage}`);
+        await fetchBills();
+        setSelectedFile(null);
 
-        // Resetear el input file visualmente
         const fileInput = document.getElementById('file-upload') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
       } else {
@@ -113,8 +117,12 @@ const App: React.FC = () => {
 
           <div className="navbar-links">
             <a href="#auto">Pago de facturas automático</a>
-            <a href="#ai">Análisis con IA</a>
-            <a href="#testimonials">Testimonios</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/analysis'); }}>
+              Análisis con IA
+            </a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/testimonials'); }}>
+              Testimonios
+            </a>
           </div>
 
           <div className="navbar-actions">
@@ -167,9 +175,19 @@ const App: React.FC = () => {
                   </button>
                 </form>
               </div>
+
+              {/* CTA secundario para ver análisis */}
+              <div className="hero-analysis-cta">
+                <button className="btn-analysis-cta" onClick={() => navigate('/analysis')}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                  </svg>
+                  Ver Análisis con IA →
+                </button>
+              </div>
             </div>
 
-            {/* Decorative Visuals (Mockups) */}
+            {/* Decorative Visuals */}
             <div className="hero-visuals">
               <div className="decorative-glow"></div>
 
@@ -210,7 +228,6 @@ const App: React.FC = () => {
 
               <div className="mockup-card card-alert">
                 <div className="mc-icon-alert">
-                  {/* FIX: Cerrado correctamente el path y la etiqueta svg */}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 </div>
                 <div>
@@ -223,7 +240,7 @@ const App: React.FC = () => {
         </section>
 
         {/* Dashboard / History Section */}
-        <section className="dashboard-section">
+        <section className="dashboard-section" id="auto">
           <div className="dashboard-header">
             <h2>Historial de Facturas</h2>
             <p>Registros analizados y procesados por PredictaFlow</p>
@@ -274,6 +291,20 @@ const App: React.FC = () => {
         <p className="attribution-note">Design conceptualized from Figma Make / Shadcn ui vibes.</p>
       </footer>
     </div>
+  );
+};
+
+// ─── App Root con React Router ────────────────────────────────────────────────
+
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/analysis" element={<AiAnalysisPage />} />
+        <Route path="/testimonials" element={<TestimonialsPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
